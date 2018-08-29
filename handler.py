@@ -13,11 +13,7 @@ def lambda_handler(event, _):
     conn = nsq.sync.SyncConn()
     conn.connect(host, port)
 
-    for event in event['Records']:
-        msg = nsq.Message(
-            event['eventID'],
-            event['kinesis']['data'],
-            event['kinesis']['approximateArrivalTimestamp'],
-            0)
+    messages = [rec['kinesis']['data'].encode('utf-8')
+                for rec in event['Records']]
 
-        conn.send(nsq.protocol.pub(topic, msg))
+    conn.send(nsq.protocol.mpub(topic, messages))
