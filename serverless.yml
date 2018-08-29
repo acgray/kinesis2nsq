@@ -1,0 +1,15 @@
+service: kinesis2nsq
+
+provider:
+  name: aws
+  runtime: python3.6
+
+functions:
+  hello:
+    handler: handler.lambda_handler
+
+plugins:
+  - serverless-python-requirements
+
+events:
+  stream: ${env:KINESIS_STREAM_ARN}
